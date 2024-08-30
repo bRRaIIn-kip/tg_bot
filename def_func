@@ -1,6 +1,10 @@
 Failik = 'usr.txt'
-def dict_pr(a,b):
-    N_dict = {elem1: {'callback_data': elem2} for elem1 in a for elem2 in b}
+def dict_pr(a):
+    N_dict = {elem: {'callback_data': elem} for elem in a}
+    return N_dict
+
+def dict_pr_dell(a):
+    N_dict = {elem[:-4]: {'callback_data': elem} for elem in a}
     return N_dict
 
 def Fwrite(wr):
@@ -26,7 +30,6 @@ def change(spisok):
 def Fadd(add_el, id_prov):
     spisok = Fread()
     for i in range(len(spisok)):
-        print(id_prov, type(id_prov), spisok[i][0] == id_prov, spisok[i][0], type(spisok[i][0]),not(add_el in spisok[i]),spisok[i],add_el)
         if spisok[i][0] == id_prov and not (add_el in spisok[i]):
             spisok[i].append(add_el)
             change(spisok)
@@ -58,7 +61,7 @@ def parse_text(text):
     a = []
     for w in words:
         if w[0] == "#":
-            a += [w]
+            a += [w.lower()]
     return a
 
 def predpoch(user_id):
