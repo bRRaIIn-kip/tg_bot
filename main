@@ -1,0 +1,76 @@
+Failik = 'usr.txt'
+def dict_pr(a,b):
+    N_dict = {elem1: {'callback_data': elem2} for elem1 in a for elem2 in b}
+    return N_dict
+
+def Fwrite(wr):
+    f = open(Failik, 'a')
+    a = Fread()
+    polz = []
+    for i in a:
+        polz +=[i[0]]
+    # print(polz)
+    if not(wr[0] in polz):
+        for _ in range(len(wr)):
+            wr[_] = wr[_] + " "
+        wr.append('\n')
+        for i in wr:
+            f.write(i)
+    f.close()
+
+def change(spisok):
+    with open(Failik, 'w') as file:
+        for sublist in spisok:
+            line = ' '.join(sublist)
+            file.write(line + '\n')
+def Fadd(add_el, id_prov):
+    spisok = Fread()
+    for i in range(len(spisok)):
+        print(id_prov, type(id_prov), spisok[i][0] == id_prov, spisok[i][0], type(spisok[i][0]),not(add_el in spisok[i]),spisok[i],add_el)
+        if spisok[i][0] == id_prov and not (add_el in spisok[i]):
+            spisok[i].append(add_el)
+            change(spisok)
+            return "Элемент был добавлен"
+        elif spisok[i][0] == id_prov and (add_el in spisok[i]):
+            return "Элемент уже есть"
+
+
+def Fremove(remove_el, id_prov):
+    spisok = Fread()
+    for i in range(len(spisok)):
+        if spisok[i][0] == id_prov and (remove_el in spisok[i]):
+            spisok[i].remove(remove_el)
+            change(spisok)
+            return "Элемент был удалён"
+        elif spisok[i][0] == id_prov and not (remove_el in spisok[i]):
+            return "Элемент отсутствует"
+
+#Чтение из файла
+def Fread():
+    f = open(Failik, 'r')
+    x = f.readlines()
+    a = []
+    for i in x:
+        a += [i.split()]
+    return a
+def parse_text(text):
+    words = text.split()
+    a = []
+    for w in words:
+        if w[0] == "#":
+            a += [w]
+    return a
+
+def predpoch(user_id):
+    redpochtenia = []
+    for i in Fread():
+        if str(user_id) in i:
+            predpochtenia = i
+    # print(predpochtenia)
+    text = ''
+    if len(predpochtenia) == 1:
+        text = "У вас нет предпочтений"
+    else:
+        for i in range(1, len(predpochtenia)):
+            text += predpochtenia[i] + ' '
+    return text
