@@ -1,76 +1,298 @@
+import telebot
+import def_func as defi
+from telebot import types
+from telebot.util import quick_markup
+
+# Вставь сюда токен своего бота
+TOKEN = '7181713403:AAHgz_IzkydwBTvlhkQMi4WyZhxJ0cNgLG8'
 Failik = 'usr.txt'
-def dict_pr(a,b):
-    N_dict = {elem1: {'callback_data': elem2} for elem1 in a for elem2 in b}
-    return N_dict
+# ID канала, из которого будем пересылать сообщения
+SOURCE_CHANNEL_ID = '-1002210992280'
 
-def Fwrite(wr):
-    f = open(Failik, 'a')
-    a = Fread()
-    polz = []
-    for i in a:
-        polz +=[i[0]]
-    # print(polz)
-    if not(wr[0] in polz):
-        for _ in range(len(wr)):
-            wr[_] = wr[_] + " "
-        wr.append('\n')
-        for i in wr:
-            f.write(i)
-    f.close()
+# Список зарегистрированных пользователей
+registered_users = []
 
-def change(spisok):
-    with open(Failik, 'w') as file:
-        for sublist in spisok:
-            line = ' '.join(sublist)
-            file.write(line + '\n')
-def Fadd(add_el, id_prov):
-    spisok = Fread()
-    for i in range(len(spisok)):
-        print(id_prov, type(id_prov), spisok[i][0] == id_prov, spisok[i][0], type(spisok[i][0]),not(add_el in spisok[i]),spisok[i],add_el)
-        if spisok[i][0] == id_prov and not (add_el in spisok[i]):
-            spisok[i].append(add_el)
-            change(spisok)
-            return "Элемент был добавлен"
-        elif spisok[i][0] == id_prov and (add_el in spisok[i]):
-            return "Элемент уже есть"
+# Список пользователь+предпочтение
+users_per = []
+
+# Предпочтения
+spisok_predpochteni = ['#физика','#математика','#программирование','#биология','#химия','#социология','#история','#языковедение','#география','#педагогика','#дизайн','#журналистика','#экономика','#юриспроденция','#туризм','#политология','#международныеотношения','#психология']
+spisok_predpochteni_del = [spisok+'_del' for spisok in spisok_predpochteni]
+# def dict_pr(a,b):
+#     N_dict = {elem1: {'callback_data': elem2} for elem1 in a for elem2 in b}
+#     return N_dict
+# N_dict = defi.dict_pr(spisok_predpochteni,spisok_predpochteni)
+# N_dict1 = N_dict
+#
+# N_dict['Продолжить'] = {'callback_data':'add'}
+# N_dict['Закончить'] = {'callback_data':'close'}
+#
+# N_dict1['Продолжить'] = {'callback_data':'add_more'}
+# N_dict1['Закончить'] = {'callback_data':'close'}
+# Для создание кнопок
+br_reg = types.InlineKeyboardButton("Регистрация", callback_data='reg')
+mark_reg = types.InlineKeyboardMarkup()
+mark_reg.add(br_reg)
+
+N_dict = defi.dict_pr(spisok_predpochteni)
+N_dict['Продолжить'] = {'callback_data': 'add'}
+N_dict['Закончить'] = {'callback_data': 'close'}
+markup_add = quick_markup(N_dict, row_width=2)
+
+N_dict = defi.dict_pr_dell(spisok_predpochteni_del)
+N_dict['Удалить ещё'] = {'callback_data': 'del'}
+N_dict['Закончить'] = {'callback_data': 'close'}
+markup_delete = quick_markup(N_dict, row_width=2)
+
+# markup_add = quick_markup(N_dict,row_width=2)
+# markup_add_more = quick_markup(N_dict,row_width=2)
+
+# print(markup)
+# br_more_add = types.InlineKeyboardButton("Продолжить", callback_data='add')
+# br_close = types.InlineKeyboardButton("Закончить", callback_data='close')
+#
+# br_fiz_del = types.InlineKeyboardButton("Физику", callback_data='fiz_del')
+# br_math_del = types.InlineKeyboardButton("Математику", callback_data='math_del')
+# br_prog_del = types.InlineKeyboardButton("Программирование", callback_data='prog_del')
+#
+# br_more_del = types.InlineKeyboardButton("Удалить ещё", callback_data='del')
+
+# mark_reg = types.InlineKeyboardMarkup()
+# mark_add = types.InlineKeyboardMarkup()
+# mark_reg.add(br_reg)
+# mark_add.row(br_math, br_prog, br_fiz)
+# mark_add.add(br_close)
+#
+# mark_del = types.InlineKeyboardMarkup()
+# mark_del.row(br_prog_del, br_fiz_del, br_math_del)
+# mark_del.add(br_close)
+#
+# mark_delete = types.InlineKeyboardMarkup()
+# mark_delete.row(br_more_del, br_close)
+#
+# mark_add_more = types.InlineKeyboardMarkup()
+# mark_add_more.add(br_more_add, br_close)
 
 
-def Fremove(remove_el, id_prov):
-    spisok = Fread()
-    for i in range(len(spisok)):
-        if spisok[i][0] == id_prov and (remove_el in spisok[i]):
-            spisok[i].remove(remove_el)
-            change(spisok)
-            return "Элемент был удалён"
-        elif spisok[i][0] == id_prov and not (remove_el in spisok[i]):
-            return "Элемент отсутствует"
+# Настройка логирования
+# logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
+# logger = logging.getLogger(__name__)
 
-#Чтение из файла
-def Fread():
-    f = open(Failik, 'r')
-    x = f.readlines()
-    a = []
-    for i in x:
-        a += [i.split()]
-    return a
-def parse_text(text):
-    words = text.split()
-    a = []
-    for w in words:
-        if w[0] == "#":
-            a += [w]
-    return a
+bot = telebot.TeleBot(TOKEN)
 
-def predpoch(user_id):
-    redpochtenia = []
-    for i in Fread():
-        if str(user_id) in i:
-            predpochtenia = i
-    # print(predpochtenia)
-    text = ''
-    if len(predpochtenia) == 1:
-        text = "У вас нет предпочтений"
-    else:
-        for i in range(1, len(predpochtenia)):
-            text += predpochtenia[i] + ' '
-    return text
+
+# # Сохранение пользователя
+# def register_user(user_id: int) -> None:
+#     if user_id not in registered_users:
+#         registered_users.add(user_id)
+#         logger.info(f"User {user_id} registered.")
+#     else:
+#         logger.info(f"User {user_id} is already registered.")
+
+#
+# def Fwrite(wr):
+#     f = open(Failik, 'a')
+#     a = Fread()
+#     polz = []
+#     for i in a:
+#         polz +=[i[0]]
+#     # print(polz)
+#     if not(wr[0] in polz):
+#         for _ in range(len(wr)):
+#             wr[_] = wr[_] + " "
+#         wr.append('\n')
+#         for i in wr:
+#             f.write(i)
+#     f.close()
+#
+#
+# def change(spisok):
+#     with open(Failik, 'w') as file:
+#         for sublist in spisok:
+#             line = ' '.join(sublist)
+#             file.write(line + '\n')
+#
+#
+# def Fadd(add_el, id_prov):
+#     spisok = Fread()
+#     for i in range(len(spisok)):
+#         print(id_prov, type(id_prov), spisok[i][0] == id_prov, spisok[i][0], type(spisok[i][0]),not(add_el in spisok[i]),spisok[i],add_el)
+#         if spisok[i][0] == id_prov and not (add_el in spisok[i]):
+#             spisok[i].append(add_el)
+#             change(spisok)
+#             return "Элемент был добавлен"
+#         elif spisok[i][0] == id_prov and (add_el in spisok[i]):
+#             return "Элемент уже есть"
+#
+#
+# def Fremove(remove_el, id_prov):
+#     spisok = Fread()
+#     for i in range(len(spisok)):
+#         if spisok[i][0] == id_prov and (remove_el in spisok[i]):
+#             spisok[i].remove(remove_el)
+#             change(spisok)
+#             return "Элемент был удалён"
+#         elif spisok[i][0] == id_prov and not (remove_el in spisok[i]):
+#             return "Элемент отсутствует"
+#
+# #Чтение из файла
+# def Fread():
+#     f = open(Failik, 'r')
+#     x = f.readlines()
+#     a = []
+#     for i in x:
+#         a += [i.split()]
+#     return a
+#
+# #Ищет предпочтения в тексте
+# def parse_text(text):
+#     words = text.split()
+#     a = []
+#     for w in words:
+#         if w[0] == "#":
+#             a += [w]
+#     return a
+#
+# def predpoch(user_id):
+#     redpochtenia = []
+#     for i in Fread():
+#         if str(user_id) in i:
+#             predpochtenia = i
+#     # print(predpochtenia)
+#     text = ''
+#     if len(predpochtenia) == 1:
+#         text = "У вас нет предпочтений"
+#     else:
+#         for i in range(1, len(predpochtenia)):
+#             text += predpochtenia[i] + ' '
+#     return text
+
+#Начальное сообщений
+@bot.message_handler(commands=['start'])
+def start(message: types.Message):
+    bot.reply_to(message, 'Привет, я бот СНО Физико-технического факультета!\n\n'
+                          'Я помогаю узнавать о грядущих мероприятиях и оставаться в курсе новостей.\n\n'
+                          'Давай я помогу выбрать темы мероприятий, о которых я буду тебя информировать.\n\n'
+                          'Для этого воспользуйтесь командой "/help" и узнайте о функционале бота.', reply_markup=mark_reg)
+
+
+@bot.callback_query_handler(func=lambda callback: True)
+def callback_message(callback, markup_add=markup_add):
+    if callback.data == 'reg':
+        user_id = callback.message.chat.id
+        # register_user(user_id)
+        # users_per.append([user_id])
+        defi.Fwrite([str(user_id)])
+        bot.reply_to(callback.message, 'Вы прошли регистрацию!')
+    if callback.data == 'close':
+        bot.reply_to(callback.message, 'Ждем новых сообщений !')
+# Добавление предпочтений
+    if callback.data == 'add':
+        user_id = callback.message.chat.id
+        # print(user_id)
+        text = defi.predpoch(user_id)
+        bot.reply_to(callback.message, 'Добавить предпочтения, которые вы хотите добавить\nВаши предпочтений:'+text, reply_markup=markup_add)#awefefawdesfjidshrogiudhrtg
+    if callback.data in spisok_predpochteni:
+        user_id = callback.message.chat.id
+        a = defi.Fadd(callback.data, str(user_id))
+        text = defi.predpoch(user_id)
+        bot.reply_to(callback.message, a + '\nВаши предпочтения: '+text+'\nВы хотите добавить ещё?', reply_markup=markup_add)
+
+
+    if callback.data == 'del':
+        user_id = callback.message.chat.id
+        text = defi.predpoch(user_id)
+        bot.reply_to(callback.message, 'Удалить предпочтения в которых вы не хотите учавствовать\n'
+                          'Ваши предпочтений:'+text, reply_markup=markup_delete)
+
+    if callback.data in spisok_predpochteni_del:
+        user_id = callback.message.chat.id
+        a = defi.Fremove(callback.data[:-4], str(user_id))
+        text = defi.predpoch(user_id)
+        if a == "Элемент отсутствует":
+            bot.reply_to(callback.message, "Элемент отсутствует" + '\nВаши оставшиеся предпочтений:' + text,reply_markup=markup_delete)
+        else:
+            bot.reply_to(callback.message, 'Было удаленно:'+callback.data[:-4]+'\nВаши оставшиеся предпочтений:' + text, reply_markup=markup_delete)
+    # if callback.data == 'fiz':
+    #     user_id = callback.message.chat.id
+    #     a = Fadd('#физика', str(user_id))
+    #     bot.reply_to(callback.message, a + '\nВы хотите добавить ещё?', reply_markup=mark_add_more)
+    # if callback.data == 'math':
+    #     user_id = callback.message.chat.id
+    #     a = Fadd('#математика', str(user_id))
+    #     bot.reply_to(callback.message, a + '\nВы хотите добавить ещё?', reply_markup=mark_add_more)
+    # if callback.data == 'prog':
+    #     user_id = callback.message.chat.id
+    #     a = Fadd('#Программирование', str(user_id))
+    #     bot.reply_to(callback.message, a + '\nВы хотите добавить ещё?', reply_markup=mark_add_more)
+    # Удаление предпочтений
+    # if callback.data == 'fiz_del':
+    #     user_id = callback.message.chat.id
+    #     a = defi.Fremove('#физика', str(user_id))
+    #     bot.reply_to(callback.message, a + '\nВы хотите удалить ещё?', reply_markup=mark_delete)
+    # if callback.data == 'math_del':
+    #     user_id = callback.message.chat.id
+    #     a = defi.Fremove('#математика', str(user_id))
+    #     bot.reply_to(callback.message, a + '\nВы хотите удалить ещё?', reply_markup=mark_delete)
+    # if callback.data == 'prog_del':
+    #     user_id = callback.message.chat.id
+    #     a = defi.Fremove('#Программирование', str(user_id))
+    #     bot.reply_to(callback.message, a + '\nВы хотите удалить ещё?', reply_markup=mark_delete)
+
+
+@bot.message_handler(commands=['help'])
+def start(message: types.Message):
+    bot.reply_to(message, 'Основные команды \n /help\n /add\n /delete\n /info.')
+
+
+@bot.message_handler(commands=['add'])
+def start(message: types.Message):
+    user_id = message.chat.id
+    text = defi.predpoch(user_id)
+    bot.reply_to(message, 'Добавить предпочтения, которые вы хотите добавить\n '
+                          'Ваши предпочтений:'+text, reply_markup=markup_add)#21312312312312
+
+
+# @bot.message_handler(commands=['Добавить'])
+# def add_element(message: types.Message):
+
+@bot.message_handler(commands=['delete'])
+def start(message: types.Message):
+    user_id = message.chat.id
+    text = defi.predpoch(user_id)
+    bot.reply_to(message, 'Удалить предпочтения в которых вы не хотите учавствовать\n'
+                          'Ваши предпочтений:'+text, reply_markup=markup_delete)
+
+@bot.message_handler(commands=['info'])
+def start(message: types.Message):
+    user_id = message.chat.id
+    text = defi.predpoch(user_id)
+    bot.reply_to(message,'Ваши предпочтения: '+text)
+
+@bot.channel_post_handler(content_types=['text', 'photo', 'video', 'document', 'audio', 'voice'])
+def forward_message(message: types.Message):
+    if str(message.chat.id) == SOURCE_CHANNEL_ID:
+        #print(message.caption)
+        #print(message.content_type)
+        if message.text:
+            text = defi.parse_text(message.text)
+        else:
+            text = defi.parse_text(message.caption)
+        # print(text)
+        if len(text) != 0:
+            # print(text)
+            registered_users = defi.Fread()
+            for polzovatel in registered_users:
+                if any(polzovatel[i].lower() in text for i in range(len(polzovatel))):
+                    # print(True)
+                    # print(int(polzovatel[0]))
+                    # print(message.text)
+                    try:
+                        # bot.send_message(int(polzovatel[0]), message.text)
+                        bot.forward_message(int(polzovatel[0]),int(SOURCE_CHANNEL_ID),message.id)
+                    except Exception as e:
+                        print("ERROR")
+                # logger.error(f"Failed to forward message to user {user_id}: {e}")
+
+
+bot.polling()
